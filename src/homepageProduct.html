@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product List</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@4.12.2/dist/full.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div class="hero min-h-screen bg-base-200">
+      <div class="container mx-auto p-4">
+        <button onclick="history.back()" class="btn btn-primary mb-4">
+          Back
+        </button>
+        <button id="fetchData" class="btn btn-primary mb-4">
+          Tampilkan data product
+        </button>
+        <div id="dataResult"></div>
+        <!-- Form to add new product -->
+        <div id="addProductForm" class="mt-4">
+          <h2 class="text-xl mb-2">Tambah Data Product</h2>
+          <form id="productForm">
+            <input type="hidden" id="productId" />
+            <div class="mb-4">
+              <label class="block mb-1" for="productName">Nama produk</label>
+              <input
+                type="text"
+                id="productName"
+                class="input input-bordered w-full"
+                required
+              />
+            </div>
+            <div class="mb-4">
+              <label class="block mb-1" for="productDescription"
+                >Deskripsi produk</label
+              >
+              <input
+                type="text"
+                id="productDescription"
+                class="input input-bordered w-full"
+                required
+              />
+            </div>
+            <div class="mb-4">
+              <label class="block mb-1" for="productPrice">Harga produk</label>
+              <input
+                type="number"
+                id="productPrice"
+                class="input input-bordered w-full"
+                required
+              />
+            </div>
+            <div class="mb-4">
+              <label class="block mb-1" for="productImage">Gambar produk</label>
+              <input
+                type="file"
+                id="productImage"
+                class="input input-bordered w-full"
+              />
+            </div>
+            <div class="mb-4">
+              <label class="block mb-1" for="productStock">Stock produk</label>
+              <input
+                type="number"
+                id="productStock"
+                class="input input-bordered w-full"
+                required
+              />
+            </div>
+            <div class="mb-4">
+              <label class="block mb-1" for="productCategory">Kategori</label>
+              <input
+                type="number"
+                id="productCategory"
+                class="input input-bordered w-full"
+                required
+              />
+            </div>
+            <button type="submit" class="btn btn-primary">Add Product</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        // URL API
+        var dataUrl = "http://127.0.0.1:8000/api/admin/products";
+        var addProductUrl = "http://127.0.0.1:8000/api/admin/products"; // Adjust the URL if necessary
+        var editProductUrl = "http://127.0.0.1:8000/api/admin/products"; // Adjust the URL if necessary
+        var deleteProductUrl = "http://127.0.0.1:8000/api/admin/products"; // Adjust the URL if necessary
+        var ImageUrl = "http://127.0.0.1:8000/storage/";
+
+        // Fungsi untuk menangani kesalahan
+        function handleError(jqXHR, textStatus, errorThrown) {
+          console.error("Error: " + textStatus, errorThrown);
+          $("#dataResult").text("Error: " + textStatus + " " + errorThrown);
+        }
+
+        // Fungsi untuk membuat tabel
+        function createTable(data) {
+          var table = $('<table class="table table-bordered"></table>');
+          var thead = $("<thead><tr></tr></thead>");
+          var tbody = $("<tbody></tbody>");
+
+          // Buat header tabel
+          Object.keys(data[0]).forEach(function (key) {
+            thead.find("tr").append("<th>" + key + "</th>");
+          });
+          thead.find("tr").append("<th>Actions</th>");
+
+          // Buat baris data
+          data.forEach(function (item) {
+            var row = $("<tr></tr>");
+            Object.entries(item).forEach(function ([key, value]) {
+              if (key === "image" && value !== "") {
+                row.append(
+                  '<td><img src="' +
+                    ImageUrl +
+                    value +
+                    '" alt="Image" style="max-width:200px; max-height:200px;"></td>'
+                );
+              } else {
+                row.append("<td>" + value + "</td>");
+              }
+            });
+            row.append(
+              '<td><button class="editProduct btn btn-warning mr-2" data-id="' +
+                item.id +
+                '">Edit</button><button class="deleteProduct btn btn-danger" data-id="' +
+                item.id +
+                '">Delete</button></td>'
+            );
+            tbody.append(row);
+          });
+
+          table.append(thead).append(tbody);
+          return table;
+        }
+
+        // Fetch data request
+        $("#fetchData").click(function () {
+          var token = localStorage.getItem("authToken"); // Ambil token dari localStorage
+          var role = localStorage.getItem("userRole"); // Ambil peran dari localStorage
+
+          if (!token) {
+            $("#dataResult").text("You must login first!");
+            return;
+          }
+          if (role !== "admin") {
+            $("#dataResult").text(
+              "AKSES DITOLAK. HANYA ADMIN, YANG DAPAT MELIHAT!!"
+            );
+            return;
+          }
+
+          if ($("#dataResult").is(":empty")) {
+            // Fetch data if the dataResult div is empty
+            $.ajax({
+              url: dataUrl,
+              type: "GET",
+              headers: {
+                Authorization: "Bearer " + token,
+              },
+              dataType: "json",
+              success: function (data) {
+                $("#dataResult").empty(); // Kosongkan hasil sebelumnya
+
+                if (data.success) {
+                  // Menampilkan data dalam bentuk tabel
+                  $("#dataResult").append(createTable(data.data.products));
+                } else {
+                  $("#dataResult").text("Data fetched is not an array.");
+                }
+              },
+              error: handleError,
+            });
+          } else {
+            // Hide data if it is already displayed
+            $("#dataResult").empty();
+          }
+        });
+
+        // Add/Edit product request
+        $("#productForm").submit(function (event) {
+          event.preventDefault();
+          var token = localStorage.getItem("authToken");
+
+          var productId = $("#productId").val();
+          var productName = $("#productName").val();
+          var productPrice = $("#productPrice").val();
+          var productDescription = $("#productDescription").val();
+          var productStock = $("#productStock").val();
+          var productCategory = $("#productCategory").val();
+
+          var formData = new FormData();
+          formData.append("name", productName);
+          formData.append("price", productPrice);
+          formData.append("description", productDescription);
+          formData.append("stock", productStock);
+          formData.append("category_id", productCategory);
+
+          var files = $("#productImage")[0].files;
+          if (files.length > 0) {
+            formData.append("image", files[0]);
+          }
+
+          var ajaxUrl = addProductUrl;
+          var ajaxType = "POST";
+
+          if (productId) {
+            ajaxUrl = editProductUrl + "/" + productId;
+            ajaxType = "POST"; // Use POST with '_method' => 'PUT' for Laravel
+            formData.append("_method", "PUT");
+          }
+
+          $.ajax({
+            url: ajaxUrl,
+            type: ajaxType,
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+            processData: false, // penting untuk file upload
+            contentType: false, // penting untuk file upload
+            data: formData,
+            success: function (data) {
+              if (data.success) {
+                $("#dataResult").text(
+                  productId
+                    ? "Product updated successfully."
+                    : "Product added successfully."
+                );
+                $("#productForm")[0].reset();
+                $("#fetchData").click(); // Refresh data
+                $("#productId").val(""); // Clear product ID after editing
+              } else {
+                $("#dataResult").text(
+                  productId
+                    ? "Failed to update product."
+                    : "Failed to add product."
+                );
+              }
+            },
+            error: handleError,
+          });
+        });
+
+        // Delete product request
+        $("#dataResult").on("click", ".deleteProduct", function () {
+          var productId = $(this).data("id");
+          var token = localStorage.getItem("authToken");
+
+          $.ajax({
+            url: deleteProductUrl + "/" + productId,
+            type: "DELETE",
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+            success: function (data) {
+              if (data.success) {
+                $("#dataResult").text("Product deleted successfully.");
+                $("#fetchData").click(); // Refresh data
+              } else {
+                $("#dataResult").text("Failed to delete product.");
+              }
+            },
+            error: handleError,
+          });
+        });
+
+        // Edit product request
+        $("#dataResult").on("click", ".editProduct", function () {
+          var productId = $(this).data("id");
+          var token = localStorage.getItem("authToken");
+
+          $.ajax({
+            url: dataUrl + "/" + productId,
+            type: "GET",
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+            dataType: "json",
+            success: function (data) {
+              if (data.success) {
+                var product = data.data.product;
+                $("#productId").val(product.id);
+                $("#productName").val(product.name);
+                $("#productPrice").val(product.price);
+                $("#productDescription").val(product.description);
+                $("#productStock").val(product.stock);
+                $("#productCategory").val(product.category_id);
+                // Note: Image file input cannot be pre-filled for security reasons.
+              } else {
+                $("#dataResult").text("Failed to fetch product data.");
+              }
+            },
+            error: handleError,
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

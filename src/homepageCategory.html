@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Category List</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@4.12.2/dist/full.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div class="hero min-h-screen bg-base-200">
+      <div class="container mx-auto p-4">
+        <button onclick="history.back()" class="btn btn-primary mb-4">
+          Back
+        </button>
+        <button id="fetchCategories" class="btn btn-primary mb-4">
+          Tampilkan data category
+        </button>
+        <div id="dataResult"></div>
+        <!-- Form to add new category -->
+        <div id="addCategoryForm" class="mt-4">
+          <h2 class="text-xl mb-2">Tambah Data Category</h2>
+          <form id="categoryForm">
+            <div class="mb-4">
+              <label class="block mb-1" for="categoryName">Nama kategori</label>
+              <input
+                type="text"
+                id="categoryName"
+                class="input input-bordered w-full"
+                required
+              />
+            </div>
+            <div class="mb-4">
+              <label class="block mb-1" for="categoryDescription"
+                >Deskripsi kategori</label
+              >
+              <input
+                type="text"
+                id="categoryDescription"
+                class="input input-bordered w-full"
+                required
+              />
+            </div>
+            <button type="submit" class="btn btn-primary">Add Category</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/src/js/category.js"></script>
+  </body>
+</html>

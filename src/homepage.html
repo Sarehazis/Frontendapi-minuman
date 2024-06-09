@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Homepage</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@4.12.2/dist/full.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <nav>
+      <div class="navbar bg-base-100 fixed top-0 left-0 right-0">
+        <div class="flex-1">
+          <a class="btn btn-ghost text-xl">DRINK API ADMIN</a>
+        </div>
+        <div class="flex-1">
+          <a href="homepageProduct.html" class="btn btn-ghost text-xl"
+            >Product</a
+          >
+        </div>
+        <div class="flex-1">
+          <a href="homepageCategory.html" class="btn btn-ghost text-xl"
+            >Categories</a
+          >
+        </div>
+        <div class="flex-none">
+          <div class="dropdown dropdown-end">
+            <div
+              tabindex="0"
+              role="button"
+              class="btn btn-ghost btn-circle avatar"
+            >
+              <div class="w-10 rounded-full">
+                <img
+                  alt="Avatar"
+                  src="https://img.freepik.com/free-vector/blond-man-with-eyeglasses-icon-isolated_24911-100831.jpg?t=st=1717767140~exp=1717770740~hmac=14fa60dc6a0c63dfb62eeefdaf3fad6761ef3b59b7cbe3207ecc234b90aa5e80&w=740"
+                />
+              </div>
+            </div>
+            <ul
+              tabindex="0"
+              class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+            >
+              <li><a href="login.html">Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <div
+      class="hero min-h-screen"
+      style="
+        background-image: url(https://img.daisyui.com/images/stock/photo-1507358522600-9f71e620c44e.jpg);
+      "
+    >
+      <div class="hero-overlay bg-opacity-60"></div>
+      <div class="hero-content text-center text-neutral-content">
+        <div class="max-w-md">
+          <h1 class="mb-5 text-5xl font-bold">Welcome to Page Admin</h1>
+          <p class="mb-5">
+            Selamat datang Admin dihalaman homepage, silahkan klik tombol "Get
+            Started" untuk melanjutkan proses
+          </p>
+          <button class="btn btn-primary">Get Started</button>
+        </div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/src/js/homepage.js"></script>
+  </body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@4.12.2/dist/full.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div class="hero min-h-screen bg-base-200">
+      <div class="hero-content flex-col">
+        <div class="text-center lg:text-left">
+          <h1 class="text-5xl font-bold">Login now!</h1>
+        </div>
+        <div class="card shrink-0 w-full max-w-md shadow-2xl bg-base-100">
+          <form id="loginForm" class="card-body">
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Email</span>
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Your Email"
+                class="input input-bordered"
+                required
+              />
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Password</span>
+              </label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Your password"
+                class="input input-bordered"
+                required
+              />
+              <label class="label">
+                <a href="/" class="label-text-alt link link-hover"
+                  >Forgot password?</a
+                >
+              </label>
+              <label class="label">
+                <a href="register.html" class="label-text-alt link link-hover"
+                  >Already have an account?</a
+                >
+              </label>
+            </div>
+            <div class="form-control mt-6">
+              <button type="submit" id="login" class="btn btn-primary">
+                Login
+              </button>
+            </div>
+            <p id="loginResult"></p>
+            <p id="registerSuccess" class="text-green-500"></p>
+            <!-- Added for success message -->
+          </form>
+        </div>
+      </div>
+    </div>
+    <script>
+      $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const message = urlParams.get("message");
+        if (message) {
+          $("#registerSuccess").text(message);
+        }
+      });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/src/js/login.js"></script>
+  </body>
+</html>
